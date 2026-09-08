@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Read-only visualization of the canonical Proof-to-Credit public testnet evidence.">
+  <title>Proof-to-Credit — Canonical Evidence</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <main class="shell" aria-labelledby="page-title">
+    <header class="masthead">
+      <div>
+        <p class="brand-mark">Proof-to-Credit</p>
+        <h1 id="page-title">Verified external financial events<br>as trusted state for a separate credit policy.</h1>
+      </div>
+      <div class="run-status" data-status aria-live="polite">CHECKING CANONICAL EVIDENCE</div>
+    </header>
+
+    <section class="architecture" aria-labelledby="architecture-title">
+      <h2 id="architecture-title" class="sr-only">Proof-to-Credit architecture</h2>
+      <div class="mode-switcher" data-mode-switcher hidden aria-label="Demo focus mode">
+        <button type="button" data-overview-control aria-pressed="true">OVERVIEW</button>
+        <span data-mode-status aria-live="polite">ALL STATES</span>
+      </div>
+      <ol class="architecture-flow">
+        <li data-focus-states="1 2">
+          <span class="step-number">01</span>
+          <div><h3>Verified external event</h3><p>Sepolia loan event<br>verified through Attestcoin / BlockProver</p></div>
+        </li>
+        <li data-focus-states="1 2">
+          <span class="step-number">02</span>
+          <div><h3>Reconstructed financial state</h3><p>Loan-scoped principal state<br>reconstructed on CC3</p></div>
+        </li>
+        <li data-focus-states="1 2 3">
+          <span class="step-number">03</span>
+          <div><h3>Independent policy</h3><p>Destination-owned credit limit<br>evaluates the verified state</p></div>
+        </li>
+        <li data-focus-states="3">
+          <span class="step-number">04</span>
+          <div><h3>Bounded commitment</h3><p><code>commitCredit</code> consumes<br>local accounting capacity</p></div>
+        </li>
+      </ol>
+    </section>
+
+    <section id="loading-state" class="system-state" aria-live="polite">
+      <span class="state-pulse" aria-hidden="true"></span>
+      Loading canonical public evidence
+    </section>
+
+    <section id="error-state" class="system-state system-state--error" hidden aria-live="assertive">
+      <strong data-error-title>Canonical evidence unavailable</strong>
+      <span data-error-detail>The read-only source files could not be validated.</span>
+    </section>
+
+    <div id="demo" hidden>
+      <section class="scenario-stack" aria-label="Canonical numerical demonstration">
+        <article class="scenario scenario--open" data-state-row="1">
+          <button type="button" class="scenario-focus-target" data-focus-state="1" aria-pressed="false" aria-label="Focus State 1: Open"></button>
+          <div class="scenario-index"><span>STATE 1</span><strong>OPEN</strong></div>
+          <div class="source-panel">
+            <p class="eyebrow">SOURCE EVENT</p>
+            <div class="event-line"><span class="event-name">OPEN</span><strong data-field="opening"></strong></div>
+            <p class="supporting">Verified proof</p>
+          </div>
+          <div class="state-panel">
+            <p class="eyebrow">VERIFIED STATE</p>
+            <p class="metric-label">Debt</p>
+            <strong class="hero-number" data-field="openingDebt"></strong>
+            <div class="capacity capacity--overflow" aria-label="Opening debt and requested capacity">
+              <div class="capacity-track">
+                <span class="segment segment--debt" data-bar="open-debt">DEBT</span>
+                <span class="segment segment--headroom" data-bar="open-headroom">HEADROOM</span>
+                <span class="request-outline" data-bar="open-request">REQUEST</span>
+              </div>
+              <span class="limit-marker">LIMIT <b data-field="limit"></b></span>
+            </div>
+          </div>
+          <div class="policy-panel">
+            <p class="eyebrow">POLICY · VIEW</p>
+            <dl class="policy-values">
+              <div><dt>Limit</dt><dd data-field="limit"></dd></div>
+              <div><dt>Request</dt><dd data-field="request"></dd></div>
+              <div class="proposed"><dt>Proposed</dt><dd data-field="openingProposed"></dd></div>
+            </dl>
+            <div class="decision-line">
+              <strong class="decision decision--reject" data-decision="opening"></strong>
+              <a data-manifest-link target="_blank" rel="noreferrer">view evaluation</a>
+            </div>
+            <p class="equation"><span data-field="openingDebt"></span> + <span data-field="request"></span> &gt; <span data-field="limit"></span></p>
+          </div>
+        </article>
+
+        <article class="scenario scenario--repayment" data-state-row="2">
+          <button type="button" class="scenario-focus-target" data-focus-state="2" aria-pressed="false" aria-label="Focus State 2: Repayment"></button>
+          <div class="scenario-index"><span>STATE 2</span><strong>REPAYMENT</strong></div>
+          <div class="source-panel">
+            <p class="eyebrow">SOURCE EVENT</p>
+            <div class="event-line"><span class="event-name">REPAY</span><strong data-field="repayment"></strong></div>
+            <p class="supporting">Verified proof</p>
+          </div>
+          <div class="state-panel">
+            <p class="eyebrow">VERIFIED STATE</p>
+            <p class="metric-label">Debt</p>
+            <p class="debt-transition"><span data-field="openingDebt"></span><span aria-hidden="true">→</span><strong data-field="repaidDebt"></strong></p>
+            <div class="capacity" aria-label="Repaid debt and requested capacity">
+              <div class="capacity-track">
+                <span class="segment segment--debt" data-bar="repaid-debt">DEBT</span>
+                <span class="segment segment--request" data-bar="repaid-request">REQUEST</span>
+              </div>
+              <span class="limit-marker">LIMIT <b data-field="limit"></b></span>
+            </div>
+          </div>
+          <div class="policy-panel">
+            <p class="eyebrow">POLICY · VIEW</p>
+            <dl class="policy-values">
+              <div><dt>Limit</dt><dd data-field="limit"></dd></div>
+              <div><dt>Request</dt><dd data-field="request"></dd></div>
+              <div class="proposed"><dt>Proposed</dt><dd data-field="repaymentProposed"></dd></div>
+            </dl>
+            <div class="decision-line">
+              <strong class="decision decision--allow" data-decision="repayment"></strong>
+              <span class="comparison-note">Same policy. Different verified state.</span>
+            </div>
+            <p class="equation"><span data-field="repaidDebt"></span> + <span data-field="request"></span> = <span data-field="limit"></span></p>
+          </div>
+        </article>
+
+        <article class="scenario scenario--commitment" data-state-row="3">
+          <button type="button" class="scenario-focus-target" data-focus-state="3" aria-pressed="false" aria-label="Focus State 3: Commitment"></button>
+          <div class="scenario-index"><span>STATE 3</span><strong>COMMITMENT</strong></div>
+          <div class="commit-pair">
+            <div><p class="eyebrow">VERIFIED DEBT</p><strong data-field="repaidDebt"></strong></div>
+            <div><p class="eyebrow">COMMITTED</p><strong data-field="committed"></strong><small>Accounting capacity only<br>No fund transfer</small></div>
+          </div>
+          <div class="state-panel capacity-panel">
+            <div class="capacity-heading"><p class="eyebrow">BOUNDED CAPACITY</p><span>LIMIT <b data-field="limit"></b></span></div>
+            <div class="capacity capacity--committed" aria-label="Debt and committed accounting capacity">
+              <div class="capacity-track">
+                <span class="segment segment--debt" data-bar="final-debt">DEBT</span>
+                <span class="segment segment--committed" data-bar="final-committed">COMMITTED</span>
+                <span class="minimum-request" data-bar="final-request">+<b data-field="finalRequest"></b></span>
+              </div>
+            </div>
+            <div class="capacity-totals">
+              <span>UTILIZATION <b data-field="utilization"></b></span>
+              <span>HEADROOM <b data-field="headroom"></b></span>
+            </div>
+          </div>
+          <div class="policy-panel policy-panel--final">
+            <div>
+              <p class="eyebrow">NEW REQUEST · VIEW</p>
+                  <p class="minimum-unit">+<strong data-field="finalRequest"></strong> REQUEST <span><b data-field="finalRequest"></b> raw = <b data-field="finalRequestDecimal"></b> DEMO_USD_6</span></p>
+            </div>
+            <div class="decision-line">
+              <strong class="decision decision--reject" data-decision="final"></strong>
+              <a data-manifest-link target="_blank" rel="noreferrer">view evaluation</a>
+            </div>
+            <p class="equation"><span data-field="utilizationDecimal"></span> + <span data-field="finalRequestDecimal"></span> = <span data-field="finalProposedDecimal"></span> &gt; <span data-field="limitDecimal"></span></p>
+          </div>
+        </article>
+      </section>
+
+      <section class="evidence-section" aria-labelledby="evidence-title">
+        <div class="evidence-heading">
+          <div><p class="eyebrow">PUBLIC RECORD</p><h2 id="evidence-title">Canonical Testnet Evidence</h2></div>
+          <p>Run <strong data-run-id></strong> · <a data-negative-link target="_blank" rel="noreferrer">runtime-negative evidence</a></p>
+        </div>
+        <ul class="evidence-list" data-evidence-list></ul>
+      </section>
+    </div>
+
+    <footer class="integrity-note">
+      <p>Read-only visualization of an existing public testnet run. <strong>No transaction is created by this UI.</strong></p>
+      <p>Proof verifies source transaction provenance. It does not prove creditworthiness, collateral, reserves, custody, or price.</p>
+    </footer>
+  </main>
+  <noscript><p class="noscript">Canonical evidence unavailable — JavaScript is required to validate the local evidence files.</p></noscript>
+</body>
+</html>

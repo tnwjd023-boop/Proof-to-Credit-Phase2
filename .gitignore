@@ -5,6 +5,7 @@ node_modules/
 .tools/
 artifacts/
 cache/
+_site/
 runs/*
 !runs/*/
 !runs/*/manifest.json

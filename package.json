@@ -5,6 +5,7 @@
   "description": "Loan-scoped proof-derived principal for a separate credit-allocation policy",
   "type": "commonjs",
   "scripts": {
+    "build:pages": "node scripts/build-pages.js",
     "check-env": "node scripts/check-env.js",
     "cc3:deploy": "node scripts/deploy-cc3.js",
     "cc3:submit": "node scripts/submit-proof.js",
@@ -17,6 +18,7 @@
     "source:open": "node scripts/source-actions.js open --amount 50",
     "source:repay": "node scripts/source-actions.js repay --amount 20",
     "test": "node --test",
+    "ui": "node scripts/serve-ui.js",
     "wallet:create": "node scripts/create-testnet-wallet.js"
   },
   "engines": {

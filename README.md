@@ -57,6 +57,16 @@ npm test
 npm run compile
 ```
 
+## Read-only demo UI
+
+The published UI is available at [tnwjd023-boop.github.io/Proof-to-Credit/ui/](https://tnwjd023-boop.github.io/Proof-to-Credit/ui/).
+
+```powershell
+npm run ui
+```
+
+This UI only visualizes the existing canonical public testnet evidence. It does not sign or broadcast transactions.
+
 ## Fresh reproducible run
 
 Choose a new run ID. Reusing an existing ID never replaces its manifest: a completed step returns `COMPLETE`, while a journaled incomplete step enters receipt recovery.

@@ -42,3 +42,25 @@ contract TestOnlyVerifierMock {
         return index;
     }
 }
+
+contract TestSettlementToken {
+    string public constant name = "Settlement Test Token";
+    string public constant symbol = "STT";
+    uint8 public constant decimals = 6;
+    address public immutable owner;
+    mapping(address => uint256) public balanceOf;
+
+    constructor(address owner_) { owner = owner_; }
+
+    function mint(address to, uint256 amount) external {
+        require(msg.sender == owner, "owner");
+        balanceOf[to] += amount;
+    }
+
+    function transfer(address to, uint256 amount) external returns (bool) {
+        if (balanceOf[msg.sender] < amount) return false;
+        balanceOf[msg.sender] -= amount;
+        balanceOf[to] += amount;
+        return true;
+    }
+}

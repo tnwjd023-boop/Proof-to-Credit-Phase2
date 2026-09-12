@@ -19,3 +19,4 @@
 | Actual BlockProver rejects mutated proof inputs | VERIFIED (T14 `eth_call`) | At CC3 block `5439094`, both source proofs verified normally while root, transaction-bytes, and continuity mutations failed. This is runtime rejection evidence, not a failed transaction receipt. |
 | A stale saved proof can be submitted without a current runtime check | FALSE | T15 checks the exact bundle before creating a signer, refreshes the same source transaction at most once, and requires the refreshed bundle to verify before broadcast. |
 | Re-running a completed proof or demo step sends another transaction | FALSE | Completed steps return `COMPLETE`; a journaled pending hash is reconciled from its receipt instead of being replaced. |
+| Settlement vault payments are real public transfers | FALSE / LOCAL ONLY | Vault, direct escrow, and LayerZero tests use local VM mocks; public asset, endpoint, peer, and funding evidence are not deployed by this repository. |

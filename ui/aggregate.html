@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proof-to-Credit · 총 익스포저</title>
+  <link rel="icon" href="data:,"><link rel="stylesheet" href="./aggregate.css">
+  <script src="./aggregate.js" defer></script>
+</head>
+<body>
+<main>
+  <header><a href="./index.html">Proof-to-Credit / 기존 공개 실행 기록</a><p class="eyebrow">VERIFIED AGGREGATE EXPOSURE · A–C</p>
+    <h1>총액과 함께,<br>확인된 범위를 봅니다.</h1>
+    <p>등록된 소스의 채무와 예약을 한 범위에서 확인합니다. 필수 소스가 빠지면 총액을 확정하지 않습니다.</p>
+  </header>
+  <section class="import" aria-labelledby="import-title">
+    <h2 id="import-title">기준 시점 보고서 열기</h2>
+    <p>총 익스포저 상태 JSON 또는 로컬 시연 파일을 선택하세요. 파일은 브라우저 안에서만 읽습니다.</p>
+    <label for="file">JSON 보고서 <input id="file" type="file" accept=".json,application/json"></label>
+    <label for="scenario">시연 단계</label><select id="scenario" hidden></select>
+    <p id="error" role="alert"></p>
+  </section>
+  <div id="report" hidden>
+    <p id="evidence" class="notice"></p>
+    <section class="metrics" aria-label="총액과 커버리지">
+      <article><h2>총 미상환 채무</h2><strong id="total"></strong><p>DEMO_USD_6</p></article>
+      <article><h2>확약·예약</h2><strong id="reserved"></strong><p>아직 채무로 전환되지 않은 한도 소비</p></article>
+      <article><h2>실행된 채무</h2><strong id="executed"></strong><p>예약에서 전환된 실행 회계 잔액</p></article>
+      <article><h2>관측 잔액 기준 여유</h2><strong id="headroom"></strong><p>커버리지와 유효기간을 충족해야 사용 가능</p></article>
+      <article><h2>소스 체크포인트 대조</h2><strong id="coverage"></strong><p>필수 소스 전체 기준</p></article>
+    </section>
+    <section class="decision"><h2>해당 시점의 판정 <span id="reason"></span></h2>
+      <p>요청 <b id="request"></b> · 한도 <b id="limit"></b> · 관측된 채무 <b id="observed"></b></p>
+      <p>이 화면의 판정은 파일에 기록된 시점에만 해당합니다. 현재 대출 승인이나 예약 실행을 제공하지 않습니다.</p>
+    </section>
+    <section><h2>소스별 잔액과 기준 위치</h2>
+      <p>블록 / 거래 / 로그 위치는 각 소스 체인 안의 순서입니다. 서로 다른 체인의 전역 순서를 뜻하지 않습니다.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">소스 주소</th><th scope="col">체인 키</th><th scope="col">채무</th><th scope="col">대출 수</th><th scope="col">이벤트 수</th><th scope="col">커버리지</th><th scope="col">Epoch</th><th scope="col">마지막 위치</th><th scope="col">체크포인트 시각</th></tr></thead><tbody id="sources"></tbody></table></div>
+      <p id="snapshot" class="hash"></p><p id="versions"></p><p id="asof"></p>
+    </section>
+  </div>
+  <footer>고정된 소스 집합 · 봉인 이후 신규 원금 증가 불가 · DEMO_USD_6 단일 단위<br>
+    관계 중복 제거·예약 실행 전환은 후속 범위입니다. 연결 채무의 합계는 예상 손실액이나 규제 EAD가 아닙니다.</footer>
+</main>
+</body>
+</html>

@@ -1,5 +1,7 @@
 # Proof-to-Credit-Phase2
 
+[English](README.md) | [한국어](README-ko.md)
+
 [![CI](https://github.com/tnwjd023-boop/Proof-to-Credit-Phase2/actions/workflows/ci.yml/badge.svg)](https://github.com/tnwjd023-boop/Proof-to-Credit-Phase2/actions/workflows/ci.yml)
 
 **A verified external event becomes reconstructed financial state, which an independent policy evaluates, which atomically consumes bounded capacity.**
@@ -245,7 +247,7 @@ Canonical evidence is in [`runs/20260906-t05/manifest.json`](runs/20260906-t05/m
 
 ### Read-only demo UI
 
-The published UI is at [tnwjd023-boop.github.io/Proof-to-Credit-Phase2/ui/](https://tnwjd023-boop.github.io/Proof-to-Credit-Phase2/ui/). It visualizes canonical evidence and never signs or broadcasts transactions.
+The published UI is at [tnwjd023-boop.github.io/Proof-to-Credit-Phase2/ui/](https://tnwjd023-boop.github.io/Proof-to-Credit-Phase2/ui/). It visualizes canonical evidence and does not sign or broadcast transactions.
 
 ```powershell
 npm run ui

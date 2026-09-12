@@ -5,6 +5,7 @@
   "description": "Loan-scoped proof-derived principal for a separate credit-allocation policy",
   "type": "commonjs",
   "scripts": {
+    "phase2": "node scripts/phase2-demo.js",
     "build:pages": "node scripts/build-pages.js",
     "check-env": "node scripts/check-env.js",
     "cc3:deploy": "node scripts/deploy-cc3.js",

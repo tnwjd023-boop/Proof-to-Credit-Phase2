@@ -1,0 +1,53 @@
+{
+  "schema": "proof-to-credit/phase2-audit-v1",
+  "runId": "phase2-20260913-multisource-01",
+  "evidenceKind": "RPC_READ_ONLY",
+  "auditedAt": "2026-09-12T23:15:25.316Z",
+  "command": "npm run phase2 -- audit --run phase2-20260913-multisource-01",
+  "result": {
+    "status": "COMPLETE",
+    "evidenceKind": "RPC_READ_ONLY",
+    "transactions": 25,
+    "proofs": 8,
+    "calls": 9,
+    "newTransactions": 0,
+    "codeObservations": {
+      "A": {
+        "address": "0x499651Aa184D1c43bD2C52E00831E30fE95Cd8c9",
+        "requestedBlock": 11691621,
+        "source": "DEPLOYMENT_BLOCK",
+        "runtimeCodeHash": "0x66139d3e08ee6a208768bf67a13b615fb6b6a511c78f764a804e2f5c6a6bf278"
+      },
+      "B": {
+        "address": "0x9c3b41eecAB34ab5089675C1a5Ab38C43f4E7A51",
+        "requestedBlock": 11691622,
+        "source": "LATEST_RPC_FALLBACK",
+        "runtimeCodeHash": "0x66139d3e08ee6a208768bf67a13b615fb6b6a511c78f764a804e2f5c6a6bf278"
+      },
+      "registry": {
+        "address": "0xE7615e11d80e748Bc79d8fEbe613A8e9863738Fd",
+        "requestedBlock": 5477229,
+        "source": "DEPLOYMENT_BLOCK",
+        "runtimeCodeHash": "0xe8033c293b388572c33bf0b40ba90b93125b8daa9e2542dac97efd6c9efaeff8"
+      },
+      "decoder": {
+        "address": "0x72F6b154F521723D29b65137D7f7BB8A968aF6d5",
+        "requestedBlock": 5477230,
+        "source": "DEPLOYMENT_BLOCK",
+        "runtimeCodeHash": "0x4195302b5a2c9e1ee08520f1203594f0884b7211d7e9272a8920603dcc388e46"
+      },
+      "ledger": {
+        "address": "0xeA1F13837d9B32EC766F74470a0A4fBAa975756B",
+        "requestedBlock": 5477231,
+        "source": "DEPLOYMENT_BLOCK",
+        "runtimeCodeHash": "0x70757458a20f207b5c1be987ea1663271b4a281a7b616e4c7a5039c344dce61d"
+      },
+      "gate": {
+        "address": "0xfcbED03763f77B70D1d3FDCcE9256b6d00DAa5a9",
+        "requestedBlock": 5477232,
+        "source": "DEPLOYMENT_BLOCK",
+        "runtimeCodeHash": "0x81e28b020cdf99fba90e690474949ef96a197fb47810df485a9ac2eaf013bc22"
+      }
+    }
+  }
+}

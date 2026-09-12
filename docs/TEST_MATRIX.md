@@ -75,3 +75,13 @@ These are `eth_call` observations, not failed transaction receipts or persistent
 | Actual receipt recovery | `runs/t15-recovery-check/manifest.json` | Five public T05 deployment/action transactions were journaled and finalized by receipt with zero new broadcasts |
 
 The interruption state machine is deterministic and local; T15 did not deliberately broadcast a redundant transaction or kill a live process. Actual proof authenticity and negative runtime behavior remain evidenced separately by T14.
+
+## Phase 2 public multi-source evidence
+
+| Boundary | Evidence | Result |
+| --- | --- | --- |
+| Native BlockProver constructor trust boundary | `test/aggregate-public.test.js` plus CC3 probe in the run manifest | Code-less verifier accepted only for chain `102031` address `0x...0FD2`; empty verifiers and other chains fail closed. Live proof behavior was checked separately with normal and tampered `eth_call`s. |
+| Source-local versus canonical repayment | `test/aggregate-public.test.js` | Six alias repayment orders/amounts reconcile per-source totals while unique canonical debt decreases once; malformed checkpoint batch rolls back all state. |
+| Public two-source accounting | `runs/phase2-20260913-multisource-01/manifest.json` | A `30`, B `20`, epoch 1 debt `50`, B repay `10`, epoch 2 debt `40`, reserve `20`; actual Sepolia proofs were submitted to CC3. |
+| Public negative controls | Run observations and proof bundles | Missing B coverage, epoch 1 over-limit, stale competing reserve, additional request `1`, exact replay, and Merkle/bytes/continuity mutations were rejected. Rejections are read-only calls, not mined revert receipts. |
+| Public revalidation | `runs/phase2-20260913-multisource-01/audit.json` | 25 transactions, 8 proof bundles and 9 block-pinned calls rechecked with `newTransactions=0`; B deployment code used an explicitly recorded latest-state fallback because the RPC pruned its deployment block. |

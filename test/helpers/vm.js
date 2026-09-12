@@ -109,8 +109,8 @@ async function deployContract(contractName, constructorArgs, { caller }) {
   };
 }
 
-async function createVmHarness({ caller }) {
-  const common = new Common({ chain: Chain.Sepolia, hardfork: Hardfork.Paris });
+async function createVmHarness({ caller, chainId = 11155111 }) {
+  const common = Common.custom({ chainId }, { hardfork: Hardfork.Paris });
   const vm = await VM.create({ common });
   let timestamp = 0n;
 

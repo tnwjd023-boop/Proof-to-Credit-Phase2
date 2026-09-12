@@ -11,7 +11,7 @@ Proof-to-Credit은 이 하나의 좁은 파이프라인을 구현한 퍼블릭 �
 - **소스 체인:** Ethereum Sepolia (`chainId 11155111`)
 - **목적지 체인:** Creditcoin CC3 Testnet (`chainId 102031`)
 - **증명 계층:** Attestcoin BlockProver (`0x...0FD2`), Creditcoin 프리컴파일
-- **상태:** 퍼블릭 테스트넷에서 엔드투엔드 경로 실행 완료; 확장 기능 A–F와 결제(settlement)는 로컬 검증 완료
+- **상태:** v1 경로와 Phase 2 다중 소스 회계 경로를 퍼블릭 테스트넷에서 실행 완료; 기관·개시(origination)·결제(settlement) 확장은 로컬 검증 상태
 
 ---
 
@@ -204,6 +204,12 @@ flowchart LR
 ```
 
 `VerifiedDebtGate`(v1)와 `MultiLoanLedger`(Phase 2)는 동일한 증명 및 디코딩 계층을 병렬로 사용하는 소비자입니다. Phase 2는 표준 v1 실행을 수정하거나 대체하지 않습니다. v1 컨트랙트와 해당 매니페스트는 변경 없이 보존됩니다.
+
+### Phase 2 퍼블릭 다중 소스 실행
+
+별도 실행 [`runs/phase2-20260913-multisource-01/manifest.json`](runs/phase2-20260913-multisource-01/manifest.json)은 서로 다른 두 `SealedLoanSource` 컨트랙트와 서로 다른 데모 부채를 사용한 **Sepolia → Attestcoin → CC3 Testnet** 공개 실증입니다. 실제 소스 이벤트와 체크포인트 증명, CC3 `MultiLoanLedger` 제출, epoch 1·2 스냅샷, B 상환, 20 단위 예약, 누락·재생·변조·오래된 버전·한도 초과에 대한 읽기 전용 거부 검사를 포함합니다. 최종 읽기 전용 감사 결과는 [`runs/phase2-20260913-multisource-01/audit.json`](runs/phase2-20260913-multisource-01/audit.json)에 있으며, 거래 25개·증명 번들 8개·과거 호출 9개를 확인했고 감사 중 새 거래는 0개였습니다.
+
+이 실행에서 퍼블릭 검증된 범위는 **두 소스 회계 및 증명 경로**입니다. 독립 기관, 여러 소스 체인, 실제 자산 전송, LayerZero 결제, 운영용 origination은 입증하지 않습니다. 소스 B 배포 코드는 퍼블릭 CC3 RPC가 배포 블록의 과거 상태를 보존하지 않아 최신 상태에서 확인했으며, 해당 fallback은 감사 결과에 명시되어 있습니다.
 
 ### 한도 생명주기
 

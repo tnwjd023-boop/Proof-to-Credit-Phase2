@@ -11,7 +11,7 @@ Proof-to-Credit is a public-testnet reference implementation of that narrow pipe
 - **Source chain:** Ethereum Sepolia (`chainId 11155111`)
 - **Destination chain:** Creditcoin CC3 Testnet (`chainId 102031`)
 - **Proof layer:** Attestcoin BlockProver (`0x0000000000000000000000000000000000000FD2`), a Creditcoin precompile
-- **Status:** end-to-end v1 path executed on public testnets; extensions A–F and settlement are locally verified
+- **Status:** v1 path and the Phase 2 two-source accounting path executed on public testnets; institution, origination, and settlement extensions remain locally verified
 
 ---
 
@@ -148,7 +148,13 @@ flowchart LR
     ORIG --> SET["SettlementVault + adapters\nonly asset release"]
 ```
 
-Phase 2 preserves the v1 contracts and canonical manifest. The new contracts use a test-only verifier boundary in local suites and do not claim public Attestcoin execution.
+Phase 2 preserves the v1 contracts and canonical manifest. Local suites use a test-only verifier boundary; the separate public run below uses the actual CC3 BlockProver and records its proof verdicts independently.
+
+### Phase 2 public multi-source run
+
+The separate run [`runs/phase2-20260913-multisource-01/manifest.json`](runs/phase2-20260913-multisource-01/manifest.json) is a public Sepolia → Attestcoin → CC3 Testnet demonstration using two distinct `SealedLoanSource` contracts and distinct demo debts. It includes actual source events, checkpoint proofs, CC3 `MultiLoanLedger` submissions, epoch 1/2 snapshots, B repayment, a 20-unit reservation, and read-only replay, mutation, missing-coverage, stale-version, and over-limit controls. The final read-only audit is [`runs/phase2-20260913-multisource-01/audit.json`](runs/phase2-20260913-multisource-01/audit.json): 25 confirmed transactions, 8 proof bundles, 9 historical calls, and zero new transactions during audit.
+
+This run is **publicly verified for the two-source accounting and proof path only**. It does not demonstrate independent institutions, multiple source chains, real asset transfers, LayerZero settlement, or production origination. Source B's deployment code was verified from the latest CC3 RPC state because the public RPC pruned its deployment-block historical state; the audit records that fallback explicitly.
 
 ## Component reference
 

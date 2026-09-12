@@ -12,6 +12,7 @@ runs/*
 !runs/*/
 !runs/*/manifest.json
 !runs/*/negative.json
+!runs/*/audit.json
 !runs/*/proofs/
 !runs/*/proofs/*.json
 !runs/probe/

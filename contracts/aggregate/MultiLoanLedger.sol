@@ -66,7 +66,12 @@ contract MultiLoanLedger {
     mapping(bytes32 => bool) public processedQueries;
 
     constructor(address registry_, address verifier_, address decoder_, uint64 maxAge_) {
-        if (registry_.code.length == 0 || verifier_.code.length == 0 || decoder_.code.length == 0 || maxAge_ == 0)
+        // CC3 Testnet implements BlockProver natively, so EXTCODESIZE is zero.
+        // This exception trusts this network's native implementation, not any empty address.
+        // Deployment tooling must still verify chain identity and actual proof behavior.
+        bool nativeBlockProver = block.chainid == 102031 &&
+            verifier_ == address(0x0000000000000000000000000000000000000FD2);
+        if (registry_.code.length == 0 || (verifier_.code.length == 0 && !nativeBlockProver) || decoder_.code.length == 0 || maxAge_ == 0)
             revert InvalidConfiguration();
         registry = ExposureScopeRegistry(registry_);
         verifier = INativeQueryVerifier(verifier_);
@@ -161,7 +166,9 @@ contract MultiLoanLedger {
                 next.assetId != canonicalPrevious.assetId || next.unitId != canonicalPrevious.unitId ||
                 next.borrower != canonicalPrevious.borrower || next.lender != canonicalPrevious.lender)
                 revert InvalidRepayment();
-            s.totalRepaid += amount;
+            // Checkpoints commit to this source's cumulative repayment, even when
+            // another alias already reduced the unique canonical debt.
+            s.totalRepaid += next.repaid - previous.repaid;
             totalDebt -= amount;
         }
         loanStates[debtKey] = next;

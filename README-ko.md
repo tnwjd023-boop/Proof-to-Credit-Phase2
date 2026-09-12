@@ -97,7 +97,7 @@ Proof-to-Credit은 네 가지 관심사를 네 개의 독립적이고 각각 확
 | 실물 금, 소유권, 수탁, 담보권 또는 준비금이 검증된다 | **FALSE / 범위 밖.** `assetId`는 데모용 라벨이다. |
 | 가격 또는 담보 가치가 정책에 반영된다 | **FALSE.** `headroom = max(creditLimit − verifiedDebt − committedCredit, 0)`이다. 가격 항은 존재하지 않는다. |
 | `commitCredit`이 대출, 자금 이체 또는 결제를 수행한다 | **FALSE.** 회계상 커밋일 뿐이다. |
-| 재구성된 상태가 완전하거나 항상 최신이다 | **FALSE / 범위 밖.** 단일 인출 대출 하나에 대한 이벤트 기반 prefix다. |
+| 재구성된 상태가 완전하거나 항상 최신이다 | **FALSE / 범위 밖.** 허용된 이벤트에서 도출한 prefix일 뿐이다. |
 | REJECT가 지속적인 온체인 의사결정 기록이다 | **FALSE.** `evaluate`는 뷰 함수다. 결과는 재현할 수 있지만 거절 로그는 존재하지 않는다. |
 | 게이트가 소스 EVM 체인 ID를 독립적으로 강제한다 | **FALSE.** `sourceEvmChainId`는 저장되지만 허용 판단에는 사용되지 않는다. 출처는 Attestcoin의 `chainKey=1`, BlockProver, 불변 emitter를 통해 확보된다. |
 | Settlement vault의 지급이 실제 퍼블릭 전송이다 | **FALSE / 로컬 전용.** Vault, escrow, LayerZero 테스트는 로컬 VM mock을 사용한다. |
@@ -209,7 +209,9 @@ flowchart LR
 
 별도 실행 [`runs/phase2-20260913-multisource-01/manifest.json`](runs/phase2-20260913-multisource-01/manifest.json)은 서로 다른 두 `SealedLoanSource` 컨트랙트와 서로 다른 데모 부채를 사용한 **Sepolia → Attestcoin → CC3 Testnet** 공개 실증입니다. 실제 소스 이벤트와 체크포인트 증명, CC3 `MultiLoanLedger` 제출, epoch 1·2 스냅샷, B 상환, 20 단위 예약, 누락·재생·변조·오래된 버전·한도 초과에 대한 읽기 전용 거부 검사를 포함합니다. 최종 읽기 전용 감사 결과는 [`runs/phase2-20260913-multisource-01/audit.json`](runs/phase2-20260913-multisource-01/audit.json)에 있으며, 거래 25개·증명 번들 8개·과거 호출 9개를 확인했고 감사 중 새 거래는 0개였습니다.
 
-이 실행에서 퍼블릭 검증된 범위는 **두 소스 회계 및 증명 경로**입니다. 독립 기관, 여러 소스 체인, 실제 자산 전송, LayerZero 결제, 운영용 origination은 입증하지 않습니다. 소스 B 배포 코드는 퍼블릭 CC3 RPC가 배포 블록의 과거 상태를 보존하지 않아 최신 상태에서 확인했으며, 해당 fallback은 감사 결과에 명시되어 있습니다.
+이 실행에서 퍼블릭 검증된 범위는 **두 소스 회계 및 증명 경로**입니다. 독립 기관, 여러 소스 체인, 실제 자산 전송, LayerZero 결제, 운영용 origination은 입증하지 않습니다. 소스 B는 Sepolia 배포이며, 퍼블릭 Sepolia RPC가 배포 블록의 과거 상태를 보존하지 않아 최신 상태에서 코드를 확인했습니다. 해당 fallback은 감사 결과에 `LATEST_RPC_FALLBACK`으로 명시되어 있습니다.
+
+전체 실행 및 재감사 절차는 [`docs/PHASE2_PUBLIC_RUN.md`](docs/PHASE2_PUBLIC_RUN.md)에 있습니다.
 
 ### 한도 생명주기
 
@@ -428,7 +430,7 @@ v1은 “한 대출의 검증된 부채는 얼마인가?”에 답합니다. Pha
 
 ### 읽기 전용 데모 UI
 
-공개된 UI는 **[tnwjd023-boop.github.io/Proof-to-Credit/ui/](https://tnwjd023-boop.github.io/Proof-to-Credit/ui/)**에 있습니다. 기존 표준 증거를 시각화할 뿐입니다. 서명하거나 브로드캐스트하지 않으며, 자격 증명·지갑·서명자 입력 화면도 없습니다. 이 속성은 [테스트로 확인](test/ui.test.js)됩니다.
+공개된 UI는 **[tnwjd023-boop.github.io/Proof-to-Credit-Phase2/ui/](https://tnwjd023-boop.github.io/Proof-to-Credit-Phase2/ui/)**에 있습니다. 기존 표준 증거를 시각화할 뿐입니다. 서명하거나 브로드캐스트하지 않으며, 자격 증명·지갑·서명자 입력 화면도 없습니다. 이 속성은 [테스트로 확인](test/ui.test.js)됩니다.
 
 로컬에서 실행하려면:
 
@@ -466,7 +468,7 @@ npm run compile   # 테스트 전에 필수: 스위트가 실제 컴파일된 �
 npm test
 ```
 
-예상 결과: **140개 테스트 통과.** 테스트 스위트는 실제 컴파일된 바이트코드를 EthereumJS VM에 배포하므로, 먼저 `npm run compile`을 실행해야 합니다. 그렇지 않으면 VM 기반 테스트가 모두 `Missing artifacts` 오류로 실패합니다.
+예상 결과: **36개 스위트 파일에서 156개 테스트 통과.** 테스트 스위트는 실제 컴파일된 바이트코드를 EthereumJS VM에 배포하므로, 먼저 `npm run compile`을 실행해야 합니다. 그렇지 않으면 VM 기반 테스트가 모두 `Missing artifacts` 오류로 실패합니다.
 
 ### 2 · 표준 퍼블릭 실행 재감사 — 읽기 전용, 서명자 없음
 
@@ -480,7 +482,17 @@ node scripts/resume.js --run 20260906-t05 --slot destinationT12
 
 RPC 연결이 필요합니다. **이 명령은 서명자를 만들지 않으며 개인 키를 사용하거나 출력하지 않습니다.**
 
-### 3 · 새로 재현 가능한 실행 — 테스트넷 자금 필요
+### 3 · Phase 2 다중 소스 실행 재감사 — 읽기 전용, 서명자 없음
+
+```powershell
+npm run phase2 -- audit --run phase2-20260913-multisource-01
+```
+
+이 명령은 서명자를 만들지 않고, 새 트랜잭션을 보내지 않으며, 매니페스트를 수정하지 않습니다. 기록된 영수증과 트랜잭션 정체성, 배포 코드 해시, proof bundle/calldata 바인딩, 과거 BlockProver 통제, 블록에 고정된 총 익스포저 관측값을 다시 확인합니다. 과거 상태를 제공하는 RPC가 필요합니다.
+
+전체 `probe → run → audit` 절차와 새 실행 생성 방법은 [`docs/PHASE2_PUBLIC_RUN.md`](docs/PHASE2_PUBLIC_RUN.md)에 있습니다. UI 게시용 아티팩트는 `npm run build:pages`로 만듭니다.
+
+### 4 · 새로 재현 가능한 실행 — 테스트넷 자금 필요
 
 새 run ID를 선택합니다. 기존 ID를 재사용해도 매니페스트를 덮어쓰지 않습니다. 완료된 단계는 `COMPLETE`를 반환하고, 저널에 기록되었으나 완료되지 않은 단계는 영수증 복구 절차로 진입합니다.
 
@@ -557,7 +569,7 @@ node scripts/resume.js --run <runId> --slot <destinationSlot> --tx <txHash> --ki
 npm run compile && npm test
 ```
 
-**32개 스위트 파일에서 140개 테스트.** CI는 `main`에 push될 때마다, 그리고 모든 pull request마다 `npm ci → npm run compile → npm test`를 실행합니다.
+**36개 스위트 파일에서 156개 테스트.** CI는 `main`에 push될 때마다, 그리고 모든 pull request마다 `npm ci → npm run compile → npm test`를 실행합니다.
 
 테스트는 파일 구조가 아니라 검증하려는 경계를 기준으로 구성되어 있습니다.
 
@@ -571,6 +583,9 @@ npm run compile && npm test
 | 계보와 생명주기 D–E | `aggregate-de` |
 | Origination과 쿼터 F | `aggregate-f`, `origination-settlement` |
 | 결제 | `settlement`, `settlement-vault`, `settlement-config`, `direct-settlement`, `layerzero-settlement` |
+| Phase 2 퍼블릭 실행과 감사 | `aggregate-public`, `phase2-scenario`, `phase2-journal`, `phase2-audit` |
+| 부정·probe 증거 모델 | `negative-result`, `runtime-negative`, `probe-result` |
+| 컴파일러 기준선 | `compiler` |
 | 실행 도구와 증거 무결성 | `resume`, `cc3-run`, `source-run`, `health`, `wallet-env`, `ui`, `ci-workflow` |
 
 ### 증거 수준
@@ -600,7 +615,7 @@ contracts/
   vendor/        EvmV1Decoder — @gluwa/usc-contracts에서 vendoring, MIT
 scripts/         배포, 증명 조회 및 제출, 데모, 재개, 상태 내보내기
 src/             Proof client, 증거 기록기, 실행/결과 모델, aggregate view
-test/            32개 스위트 파일 — test/helpers의 VM harness, test/fixtures의 실제 fixture
+test/            36개 스위트 파일 — test/helpers의 VM harness, test/fixtures의 실제 fixture
 ui/              읽기 전용 증거 뷰어 및 aggregate status view
 runs/            퍼블릭 실행 매니페스트, proof bundle, 부정 증거, probe 증거
 docs/            SPEC, CLAIMS, TEST_MATRIX, 기준선, PROGRESS, 설계 계획
@@ -618,6 +633,8 @@ docs/            SPEC, CLAIMS, TEST_MATRIX, 기준선, PROGRESS, 설계 계획
 | [`docs/DECODER_BASELINE.md`](docs/DECODER_BASELINE.md) | 컴파일러 설정, 코드 해시, 실제 fixture 디코딩 |
 | [`docs/SOURCE_BASELINE.md`](docs/SOURCE_BASELINE.md) | 소스 변조 지점과 부정 동작 |
 | [`docs/DESTINATION_BASELINE.md`](docs/DESTINATION_BASELINE.md) | T07 → T09 → T12 배포 이력 |
+| [`docs/PHASE2_PUBLIC_RUN.md`](docs/PHASE2_PUBLIC_RUN.md) | Phase 2 퍼블릭 실행 절차 — `probe → run → audit`, TTL 근거, 관측 항목 |
+| [`docs/TESTNET_WALLET.md`](docs/TESTNET_WALLET.md) | 테스트넷 전용 지갑 취급 절차 |
 | [`docs/PROGRESS.md`](docs/PROGRESS.md) | T01부터 T15까지의 작업별 기록 |
 | [`docs/superpowers/`](docs/superpowers) | Phase 2 구현 계획과 결제 설계 |
 

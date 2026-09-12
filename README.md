@@ -154,7 +154,9 @@ Phase 2 preserves the v1 contracts and canonical manifest. Local suites use a te
 
 The separate run [`runs/phase2-20260913-multisource-01/manifest.json`](runs/phase2-20260913-multisource-01/manifest.json) is a public Sepolia → Attestcoin → CC3 Testnet demonstration using two distinct `SealedLoanSource` contracts and distinct demo debts. It includes actual source events, checkpoint proofs, CC3 `MultiLoanLedger` submissions, epoch 1/2 snapshots, B repayment, a 20-unit reservation, and read-only replay, mutation, missing-coverage, stale-version, and over-limit controls. The final read-only audit is [`runs/phase2-20260913-multisource-01/audit.json`](runs/phase2-20260913-multisource-01/audit.json): 25 confirmed transactions, 8 proof bundles, 9 historical calls, and zero new transactions during audit.
 
-This run is **publicly verified for the two-source accounting and proof path only**. It does not demonstrate independent institutions, multiple source chains, real asset transfers, LayerZero settlement, or production origination. Source B's deployment code was verified from the latest CC3 RPC state because the public RPC pruned its deployment-block historical state; the audit records that fallback explicitly.
+This run is **publicly verified for the two-source accounting and proof path only**. It does not demonstrate independent institutions, multiple source chains, real asset transfers, LayerZero settlement, or production origination. Source B is a Sepolia deployment, and its deployment code was verified from the latest Sepolia RPC state because the public endpoint pruned its deployment-block historical state; the audit records that fallback explicitly as `LATEST_RPC_FALLBACK`.
+
+The full run and re-audit procedure is [`docs/PHASE2_PUBLIC_RUN.md`](docs/PHASE2_PUBLIC_RUN.md).
 
 ## Component reference
 
@@ -275,7 +277,7 @@ npm run compile
 npm test
 ```
 
-Expected: **140 tests passing** across 32 test files. The suites deploy compiled bytecode into an EthereumJS VM, so compilation must run first.
+Expected: **156 tests passing** across 36 test files. The suites deploy compiled bytecode into an EthereumJS VM, so compilation must run first.
 
 ### Re-audit the canonical public run
 
@@ -284,6 +286,14 @@ node scripts/resume.js --run 20260906-t05 --slot destinationT12
 ```
 
 This performs read-only checks of recorded receipts, deployed code hashes, `verifiedDebt`, and `committedCredit`. Expected final values are `verifiedDebt=30000000`, `committedCredit=30000000`, and status `COMPLETE`.
+
+### Re-audit the Phase 2 multi-source run
+
+```powershell
+npm run phase2 -- audit --run phase2-20260913-multisource-01
+```
+
+This creates no signer, sends no transactions, and does not modify the manifest. It re-checks recorded receipts, transaction identities, deployment code hashes, proof bundle bindings, historical BlockProver controls, and block-pinned aggregate observations. Historical RPC availability is required. See [`docs/PHASE2_PUBLIC_RUN.md`](docs/PHASE2_PUBLIC_RUN.md) for the full `probe → run → audit` procedure and for publishing the UI with `npm run build:pages`.
 
 ### Fresh testnet run
 
@@ -339,7 +349,7 @@ contracts/
   vendor/        Vendored EvmV1Decoder
 scripts/         Deployment, proof, run recovery, and status export
 src/             Proof client, evidence writer, run models, aggregate view
-test/            32 test files and VM helpers
+test/            36 test files and VM helpers
 ui/              Read-only evidence viewer and aggregate status view
 runs/            Public manifests, proof bundles, and negative evidence
 docs/            Scope, claims, test matrix, baselines, and design plans

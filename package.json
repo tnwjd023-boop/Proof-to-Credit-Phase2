@@ -9,6 +9,7 @@
     "check-env": "node scripts/check-env.js",
     "cc3:deploy": "node scripts/deploy-cc3.js",
     "cc3:submit": "node scripts/submit-proof.js",
+    "aggregate:status": "node scripts/aggregate-status.js",
     "demo": "node scripts/demo.js",
     "compile": "node scripts/compile.js",
     "proof:fetch": "node scripts/fetch-proof.js",

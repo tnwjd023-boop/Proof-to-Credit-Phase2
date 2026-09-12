@@ -35,6 +35,9 @@ Reverting security cases assert unchanged `stateVersion`, `verifiedDebt`, `total
 | same-version competing commitments | only first transition succeeds | Protected | `commitment.test.js` |
 | extreme `uint256` principal | evaluation panics and commitment rejects; no over-allocation | Partially protected / fail-closed | `security.test.js` |
 | unseen tail repayment | destination may retain higher debt | Not proven by sequence; constrained by single-draw source | source mutation-surface tests |
+| settlement vault exact payment / replay / authorization | revert or one successful release | Protected locally | `settlement-vault.test.js` |
+| direct escrow failed payment and retry | remains `FAILED` until a later exact retry succeeds | Protected locally | `direct-settlement.test.js` |
+| LayerZero peer/EID/GUID and retry handling | wrong packet reverts; failed delivery can retry once | Protected locally | `layerzero-settlement.test.js` |
 
 Synthetic receipt tests do not claim Attestcoin accepted mutated bytes. The verifier mock deliberately returns `true` to isolate application checks. T14 separately records actual BlockProver rejection of root, transaction-bytes, and continuity mutations for both source proofs.
 
@@ -56,6 +59,7 @@ These are `eth_call` observations, not failed transaction receipts or persistent
 - `sourceChainKey` is enforced by the gate and BlockProver. `sourceEvmChainId` is stored but is not separately decoded or checked during admission.
 - `evaluate()` is a view call. REJECT is reproducible from historical state but is not a persistent rejection transaction or log.
 - `commitCredit()` records a bounded accounting commitment only; it transfers no funds.
+- Settlement adapters and vaults are local execution boundaries; no public LayerZero or asset transfer is claimed without deployment evidence.
 - Canonical T12 uses one EOA as source borrower, destination borrower, and policy owner. Execution domains are separated; independent institutions are not demonstrated.
 
 ## T15 reproducibility and interruption safety

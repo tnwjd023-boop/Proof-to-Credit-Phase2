@@ -6,6 +6,8 @@ node_modules/
 artifacts/
 cache/
 _site/
+Proof_to_Credit_총익스포저_개발방향.md
+Gold_Headroom_BUIDL_CTC_Execution_Plan_KR.md
 runs/*
 !runs/*/
 !runs/*/manifest.json

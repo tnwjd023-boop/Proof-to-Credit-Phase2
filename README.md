@@ -25,7 +25,7 @@ DebtRepaid(20)  -- Attestcoin proof -->  verifiedDebt = 30
 
 All values use the single six-decimal accounting unit `DEMO_USD_6` and are backed by the [canonical run manifest](runs/20260906-t05/manifest.json). The proof establishes inclusion of the supplied source transaction bytes in the supported source chain path. The application then validates the receipt, emitter, event identity, sequence, and repayment arithmetic. `REJECT` and `ALLOW` are reproducible `evaluate` view results; only `commitCredit` changes capacity.
 
-Attestcoin does **not** prove creditworthiness or decide whether credit should be granted. This prototype does not verify collateral, gold reserves, custody, price, complete history, or aggregate exposure. `commitCredit` is an accounting commitment; it does not transfer or lend funds. See the [submission description](docs/SUBMISSION.md) for the concise project narrative.
+Attestcoin does **not** prove creditworthiness or decide whether credit should be granted. The canonical v1 run does not verify collateral, gold reserves, custody, price, complete history, or aggregate exposure; the separate A–C aggregate extension documents its fixed-scope and sealed-source limits below. `commitCredit` is an accounting commitment; it does not transfer or lend funds. See the [submission description](docs/SUBMISSION.md) for the concise project narrative.
 
 ## Canonical public evidence
 
@@ -66,6 +66,16 @@ npm run ui
 ```
 
 This UI only visualizes the existing canonical public testnet evidence. It does not sign or broadcast transactions.
+
+The aggregate A–C demo is available at `/ui/aggregate.html`. It reads a separately exported JSON status report and shows source balances, mandatory-source coverage, checkpoint positions, snapshot freshness, total debt, reservations, and the policy decision. Export one destination RPC block with `AGGREGATE_RPC_URL=<url> npm run aggregate:status -- <gate-address> [request-raw-units]`. Reports are point-in-time, read-only evidence.
+
+The aggregate contracts use an immutable mandatory source scope and sealed demo sources. `SealedLoanSource` permits opening only before `seal()`, then permits repayment and emits checkpoints whose loan/event counts, history root, and cumulative arithmetic are reconciled by `MultiLoanLedger`. `ExposurePolicyGate.reserve` binds ledger state, policy, scope version, and snapshot ID in one transaction. Missing sources, stale snapshots, invalid proofs, sequence gaps, and competing state versions fail closed. These local tests use a test-only verifier boundary and do not claim public Attestcoin execution; canonical v1 runs remain preserved separately.
+
+The D–E lifecycle maps verified aliases to a fixed canonical debt ID (`REPRESENTS` or `WRAPS`) before ingestion, so a token or wrapper representation is not counted as another debt while an unrelated canonical ID is. An authorised executor can atomically move one commitment from reserved to executed exposure and apply a referenced repayment proof; the opaque proof ID is an evidence binding, not a public Attestcoin verification result. The source-side repayment path remains proof-driven through the ledger.
+
+F-stage `OriginationController` adds pair, source-wide, and institution-wide quotas. A new origination must consume an `EXECUTED` gate commitment for its exact amount, use a registered source key, and present a one-time proof reference; quota use and origination identity are updated atomically, and each commitment can be originated once. Deploy one canonical controller per gate/registry pair and treat its address as part of the deployment configuration, since consumption and quota ledgers are controller-local. This records a controlled obligation and does not transfer funds or prove a new source transaction until that source’s Attestcoin adapter and settlement evidence are integrated.
+
+Settlement integration now provides an idempotent `SettlementVault`, a direct escrow adapter with retryable failure state, and an optional LayerZero OApp boundary. The vault is the only component that releases configured ERC-20/native assets; settlement status is separate from executed exposure. LayerZero endpoint/EID/peer values are explicit deployment inputs and must be verified for the target CC3 network before enabling that route. Local tests use mock endpoints and tokens only.
 
 ## Fresh reproducible run
 

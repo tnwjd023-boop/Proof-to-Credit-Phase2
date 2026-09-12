@@ -9,6 +9,9 @@ const PUBLISHED_FILES = Object.freeze([
   'ui/index.html',
   'ui/app.js',
   'ui/styles.css',
+  'ui/aggregate.html',
+  'ui/aggregate.js',
+  'ui/aggregate.css',
   'runs/20260906-t05/manifest.json',
   'runs/20260906-t05/negative.json',
 ]);

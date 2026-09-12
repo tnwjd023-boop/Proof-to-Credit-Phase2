@@ -5,6 +5,7 @@ const path = require('node:path');
 const { Chain, Common, Hardfork } = require('@ethereumjs/common');
 const { Address, bytesToHex, hexToBytes } = require('@ethereumjs/util');
 const { VM } = require('@ethereumjs/vm');
+const { Block } = require('@ethereumjs/block');
 const { Interface, concat, getAddress, toBeHex, zeroPadValue } = require('ethers');
 
 const ARTIFACT_PATH = path.join(__dirname, '..', '..', 'artifacts', 'contracts.json');
@@ -45,6 +46,15 @@ function revertError(iface, result) {
     const parsed = iface.parseError(data);
     if (parsed) return new Error(`${parsed.name}(${[...parsed.args].join(',')})`);
   } catch {}
+  try {
+    const bundle = JSON.parse(fs.readFileSync(ARTIFACT_PATH, 'utf8'));
+    for (const artifact of Object.values(bundle.contracts)) {
+      try {
+        const parsed = new Interface(artifact.abi).parseError(data);
+        if (parsed) return new Error(`${parsed.name}(${[...parsed.args].join(',')})`);
+      } catch {}
+    }
+  } catch {}
   return new Error(`EVM revert: ${result.exceptionError?.error || 'unknown'} (${data})`);
 }
 
@@ -52,8 +62,8 @@ function parsedEvents(iface, logs = []) {
   return logs.map(([, topics, data]) => {
     const raw = { topics: topics.map(bytesToHex), data: bytesToHex(data) };
     const parsed = iface.parseLog(raw);
-    return { name: parsed.name, args: parsed.args, topics: raw.topics, data: raw.data };
-  });
+    return parsed ? { name: parsed.name, args: parsed.args, topics: raw.topics, data: raw.data } : null;
+  }).filter(Boolean);
 }
 
 async function deployContract(contractName, constructorArgs, { caller }) {
@@ -102,6 +112,7 @@ async function deployContract(contractName, constructorArgs, { caller }) {
 async function createVmHarness({ caller }) {
   const common = new Common({ chain: Chain.Sepolia, hardfork: Hardfork.Paris });
   const vm = await VM.create({ common });
+  let timestamp = 0n;
 
   async function deploy(contractName, constructorArgs, { caller: deployer = caller } = {}) {
     const artifact = loadArtifact(contractName);
@@ -116,6 +127,7 @@ async function createVmHarness({ caller }) {
 
     async function execute(functionName, args, { caller: callFrom = caller, isStatic = false } = {}) {
       const call = await vm.evm.runCall({
+        block: Block.fromBlockData({ header: { timestamp } }, { common }),
         caller: Address.fromString(callFrom),
         to: contractAddress,
         data: hexToBytes(iface.encodeFunctionData(functionName, args)),
@@ -135,7 +147,7 @@ async function createVmHarness({ caller }) {
     };
   }
 
-  return { deploy };
+  return { deploy, setTimestamp: (value) => { timestamp = BigInt(value); } };
 }
 
 module.exports = { createVmHarness, deployContract, loadArtifact, replaceFirstWord, runPureLibrary };

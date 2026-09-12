@@ -1,6 +1,6 @@
-# Proof-to-Credit
+# Proof-to-Credit Phase 2
 
-[![CI](https://github.com/tnwjd023-boop/Proof-to-Credit/actions/workflows/ci.yml/badge.svg)](https://github.com/tnwjd023-boop/Proof-to-Credit/actions/workflows/ci.yml)
+[![CI](https://github.com/tnwjd023-boop/Proof-to-Credit-Phase2/actions/workflows/ci.yml/badge.svg)](https://github.com/tnwjd023-boop/Proof-to-Credit-Phase2/actions/workflows/ci.yml)
 
 **Verified external event → Reconstructed financial state → Independent policy evaluation → Atomic bounded capacity consumption**
 
@@ -59,7 +59,7 @@ npm run compile
 
 ## Read-only demo UI
 
-The published UI is available at [tnwjd023-boop.github.io/Proof-to-Credit/ui/](https://tnwjd023-boop.github.io/Proof-to-Credit/ui/).
+The published UI is available at [tnwjd023-boop.github.io/Proof-to-Credit-Phase2/ui/](https://tnwjd023-boop.github.io/Proof-to-Credit-Phase2/ui/).
 
 ```powershell
 npm run ui
